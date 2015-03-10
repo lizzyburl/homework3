@@ -5,10 +5,10 @@
 % 16,000 Sampling Frequency / 256 Bins = 62.5  Hz / Bin
 clear;
 freqPerBin = 62.5;
-threshold = 300;
+threshold = 325;
 timeSteps = 45;
-lowFreq = 400;
-highFreq = 675; %700
+lowFreq = 455;
+highFreq = 755;
 lowIndex = floor(lowFreq/freqPerBin);
 highIndex = floor(highFreq/freqPerBin);
 
@@ -31,10 +31,9 @@ for soundFile = 1:10
    % i = 1:length(x);
     subplot(2,5, soundFile);
     pcolor(L); shading('flat');
-    axis([1,size(L,2),1,128]);
+    axis([1,size(L,2),1,40]); %128]);
     xlabel('Time');
     ylabel('Frequency Step');
-    %axis([1500 2000 1 128])
 
     mn=min(min(L));
     L=L-mn;
@@ -57,6 +56,10 @@ for soundFile = 1:10
         title('Rex has not been called');
     else
         title(sprintf('Rex was called at time step : %d\n', exSounds(1)));
+        line([exSounds(1) exSounds(1)], [lowIndex highIndex], 'LineWidth', 1, 'Color', 'k');
+        line([exSounds(1)+timeSteps, exSounds(1)+timeSteps], [lowIndex highIndex], 'LineWidth', 1, 'Color', 'k');
+        line([exSounds(1) exSounds(1)+timeSteps], [lowIndex lowIndex], 'LineWidth', 1, 'Color', 'k');
+        line([exSounds(1), exSounds(1)+timeSteps], [highIndex highIndex], 'LineWidth', 1, 'Color', 'k');
     end
     clear x X L Lwindowed Xwindowed fs nbits 
 end
