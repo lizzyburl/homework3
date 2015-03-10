@@ -25,7 +25,7 @@ i = 1:length(x)
 pcolor(L); shading('flat');
 axis([1,size(L,2),1,128]);
 xlabel('Time');
-ylabel('Frequency Step');
+ylabel('Frequency');
 %axis([1500 2000 1 128])
 
 mn=min(min(L));
