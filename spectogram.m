@@ -2,8 +2,8 @@
 % Lizzy Burl, Ethan Hill, Jorge Chang, James Burgess
 
 %% Part 1: Building Your Own Spectrogram
-
-[x, fs, nbits] = wavread('rex1.wav');
+clear;
+[x, fs, nbits] = wavread('rex8.wav');
 plot(x);
 sound(x, fs);
 
@@ -12,8 +12,8 @@ log_x_squared = log(real(X).^2+imag(X).^2);
 
 winsize = 256;
 clear M
-shift = 20
-c = 1
+shift = 20;
+c = 1;
 h = hamming(256);
 for i = 1:shift:length(x)-winsize
     Xwindowed = fft(x(i:i+winsize-1).*h, winsize);
@@ -21,7 +21,7 @@ for i = 1:shift:length(x)-winsize
     L(:,c) = Lwindowed;
     c = c + 1;
 end
-i = 1:length(x)
+i = 1:length(x);
 pcolor(L); shading('flat');
 axis([1,size(L,2),1,128]);
 xlabel('Time');
@@ -39,7 +39,23 @@ L=floor(L/mx*128)-50;
 L(find(L<1))=1;
 L(find(L>64))=64;
 
-d = fdesign.bandpass('Fst1,Fp1', 300, 500);
-Hd = design(d, 'equiripple');
 
-y = filter(Hd, L);
+% 16,000 Sampling Frequency / 256 Bins = 62.5  Hz / Bin
+freqPerBin = 62.5;
+threshold = 480;
+timeSteps = 50;
+lowFreq = 300;
+highFreq = 700;
+lowIndex = floor(lowFreq/freqPerBin);
+highIndex = floor(highFreq/freqPerBin);
+bandRangeSum = sum(L(lowIndex:highIndex, :),1);
+
+thresholdPass = bandRangeSum > threshold;
+timeStepFilter = ones(1, timeSteps);
+
+exSounds = strfind(thresholdPass, timeStepFilter);
+if (isempty(exSounds))
+    disp('Rex has not been called');
+else
+    fprintf('Rex was called at time step : %d\n', exSounds(1));
+end

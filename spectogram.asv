@@ -21,11 +21,12 @@ for i = 1:shift:length(x)-winsize
     L(:,c) = Lwindowed;
     c = c + 1;
 end
-i = 1:length(x)
+i = 1:length(x);
+disp(size(L));
 pcolor(L); shading('flat');
 axis([1,size(L,2),1,128]);
 xlabel('Time');
-ylabel('Frequency');
+ylabel('Frequency Step');
 %axis([1500 2000 1 128])
 
 mn=min(min(L));
@@ -39,7 +40,17 @@ L=floor(L/mx*128)-50;
 L(find(L<1))=1;
 L(find(L>64))=64;
 
-d = fdesign.bandpass('Fst1,Fp1', 300, 500);
-Hd = design(d, 'equiripple');
 
-y = filter(Hd, L);
+% 16,000 Sampling Frequency / 256 Bins = 62.5  Hz / Bin
+freqPerBin = 62.5;
+threshold = 480;
+
+lowFreq = 300;
+highFreq = 700;
+lowIndex = floor(lowFreq/freqPerBin);
+highIndex = floor(highFreq/freqPerBin);
+bandRangeSum = sum(L(lowIndex:highIndex, :),1);
+
+thresholdPass = bandRangSum > threshold;
+timeStepFilter = ones(1, 
+exSounds = strfind(thresholdPass, 
