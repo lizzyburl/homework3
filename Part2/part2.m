@@ -1,5 +1,6 @@
 % Homework 1
 % Lizzy Burl, Ethan Hill, Jorge Chang, James Burgess
+% Part 2
 
 clear;
 
@@ -8,13 +9,12 @@ clear;
 for soundFile = 1:10
     [x, fs, nbits] = wavread(sprintf('rex%d.wav',soundFile));
     timeSteps = size(x);
-    pause;
-    
+   
     winsize=400;
-    shift=20;
+    shift=160;
     c=1;
     clear L;
-    h=hamming(256);
+    h=hamming(winsize);
 
     for i=1:shift:length(x)-winsize
          X=fft(x(i:i+winsize-1).*h,winsize);

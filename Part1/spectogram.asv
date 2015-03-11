@@ -53,9 +53,9 @@ for soundFile = 1:10
 
     exSounds = strfind(thresholdPass, timeStepFilter);
     if (isempty(exSounds))
-        title(sprintf('% d : Rex has not been called', soundFile));
+        title(sprintf('% dRex has not been called'));
     else
-        title(sprintf('% d : Rex was called at time step : %d\n', soundFile, exSounds(1)));
+        title(sprintf('Rex was called at time step : %d\n', exSounds(1)));
         line([exSounds(1) exSounds(1)], [lowIndex highIndex], 'LineWidth', 1, 'Color', 'k');
         line([exSounds(1)+timeSteps, exSounds(1)+timeSteps], [lowIndex highIndex], 'LineWidth', 1, 'Color', 'k');
         line([exSounds(1) exSounds(1)+timeSteps], [lowIndex lowIndex], 'LineWidth', 1, 'Color', 'k');
