@@ -4,6 +4,8 @@
 %% Part 1: Building Your Own Spectrogram
 % 16,000 Sampling Frequency / 256 Bins = 62.5  Hz / Bin
 clear;
+
+% These are the parameters.
 freqPerBin = 62.5;
 threshold = 325;
 timeSteps = 45;
@@ -29,7 +31,7 @@ for soundFile = 1:10
         c = c + 1;
     end
    % i = 1:length(x);
-    subplot(2,5, soundFile);
+    subplot(5,2, soundFile);
     pcolor(L); shading('flat');
     axis([1,size(L,2),1,40]); %128]);
     xlabel('Time');
@@ -46,16 +48,24 @@ for soundFile = 1:10
     L(find(L<1))=1;
     L(find(L>64))=64;
 
+    % bandRangeSum = Creates a column sum vector in our band frequencies
+    % for each timestep
     bandRangeSum = sum(L(lowIndex:highIndex, :),1);
-
+    % Thresholding - Each sum should be greater than said threshold
     thresholdPass = bandRangeSum > threshold;
+    % We are making a vector of the length of consecutive timesteps that we
+    % want to hear the 'ex' sound in a row (length timeSteps).
+    % exSounds represents the locations that these vectors are found. For
+    % the most part, exSounds will have a handful of results that are one
+    % next to each other if the 'ex' sound was made for more time steps in
+    % a row than 'timeSteps.' Therefore, we will just choose the first one.
     timeStepFilter = ones(1, timeSteps);
-
     exSounds = strfind(thresholdPass, timeStepFilter);
+ 
     if (isempty(exSounds))
-        title('Rex has not been called');
+        title(sprintf('% d : Rex has not been called', soundFile));
     else
-        title(sprintf('Rex was called at time step : %d\n', exSounds(1)));
+        title(sprintf('% d : Rex was called at time step : %d\n', soundFile, exSounds(1)));
         line([exSounds(1) exSounds(1)], [lowIndex highIndex], 'LineWidth', 1, 'Color', 'k');
         line([exSounds(1)+timeSteps, exSounds(1)+timeSteps], [lowIndex highIndex], 'LineWidth', 1, 'Color', 'k');
         line([exSounds(1) exSounds(1)+timeSteps], [lowIndex lowIndex], 'LineWidth', 1, 'Color', 'k');
