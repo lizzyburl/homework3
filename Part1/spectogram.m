@@ -4,6 +4,8 @@
 %% Part 1: Building Your Own Spectrogram
 % 16,000 Sampling Frequency / 256 Bins = 62.5  Hz / Bin
 clear;
+
+% These are the parameters.
 freqPerBin = 62.5;
 threshold = 325;
 timeSteps = 45;
@@ -46,12 +48,20 @@ for soundFile = 1:10
     L(find(L<1))=1;
     L(find(L>64))=64;
 
+    % bandRangeSum = Creates a column sum vector in our band frequencies
+    % for each timestep
     bandRangeSum = sum(L(lowIndex:highIndex, :),1);
-
+    % Thresholding - Each sum should be greater than said threshold
     thresholdPass = bandRangeSum > threshold;
+    % We are making a vector of the length of consecutive timesteps that we
+    % want to hear the 'ex' sound in a row (length timeSteps).
+    % exSounds represents the locations that these vectors are found. For
+    % the most part, exSounds will have a handful of results that are one
+    % next to each other if the 'ex' sound was made for more time steps in
+    % a row than 'timeSteps.' Therefore, we will just choose the first one.
     timeStepFilter = ones(1, timeSteps);
-
     exSounds = strfind(thresholdPass, timeStepFilter);
+ 
     if (isempty(exSounds))
         title(sprintf('% d : Rex has not been called', soundFile));
     else
