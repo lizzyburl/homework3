@@ -20,12 +20,17 @@ function [ ] = GetMFCC( filepath, lower, upper, M )
     for i=1:shift:length(x)-winsize
         % Take the fft for one timestep
         X = fft(x(i:i+winsize-1).*h,winsize);
-        c = C(j, M, bins, X);
+        c = zeros(13,1);
+        for coeff = 0:12
+            c(coeff+1) = C(coeff, M, bins, X);
+        end
     end
 
     pause;
 
 end
+
+%% 
 
 function [bins] = GetBins(lower, upper, M)
     lower_mel = B(lower);
@@ -40,6 +45,7 @@ function [bins] = GetBins(lower, upper, M)
     bins = Binv(bins_in_mel);
 end
 
+%% Functions to convert to mel and back
 function [b] = B(f)
     b = 1125*log(1 + f/700);
 end
@@ -57,15 +63,15 @@ function [f] = F(m, M, bins)
     Fs = 16000;
     % N = The number of points in FFT
     N = 400;
-    % fl = Lower frequency of the filterbank
-    fl = bins(m);
-    % fh = High frequency of the filterbank
-    fh = bins(m+1);
-    if m == 0
+    if m == 0 || m == -1
         f = 0;
-    elseif m == M
-        f = N/Fs
+    elseif m == M-1 || m == M
+        f = N/Fs;
     else
+        % fl = Lower frequency of the filterbank
+        fl = bins(m+1);
+        % fh = High frequency of the filterbank
+        fh = bins(m+2);
         % This might not be right...
         f = N/Fs * Binv(B(fl)+m*((B(fh)-B(fl))/(M+1)));
     end
@@ -80,9 +86,9 @@ function [h] = H(k, m, M, bins)
     if (k < F(m-1, M, bins))
         h = 0;
     elseif ((k >= F(m-1, M, bins))&&(k<=F(m, M, bins)))
-        h = (2*(k-f(m-1,M,bins)))/((f(m+1,M,bins)-f(m-1,M,bins))*(f(m,M,bins)-f(m-1,M,bins)));
+        h = (2*(k-F(m-1,M,bins)))/((F(m+1,M,bins)-F(m-1,M,bins))*(F(m,M,bins)-F(m-1,M,bins)));
     elseif ((k >= F(m, M, bins))&&(k<=F(m+1, M, bins)))
-        h = (2*(f(m+1,M,bins)-k))/((f(m+1,M,bins)-f(m-1,M,bins))*(f(m+1,M,bins)-f(m,M,bins)));
+        h = (2*(F(m+1,M,bins)-k))/((F(m+1,M,bins)-F(m-1,M,bins))*(F(m+1,M,bins)-F(m,M,bins)));
     else
         h = 0;
     end
@@ -97,20 +103,31 @@ function [s] = S(m, M, bins, X)
 
 sum = 0;
 for k = 0:length(X)-1
-    sum = sum + X(k+1)^2*H(k, m, M, bins);
+    sum = sum + (real(X(k+1))^2+imag(X(k+1))^2)*H(k, m, M, bins);
 end
+pause;
 s = log(sum);
 
 end
 
 %% C
-% n: 
+% n: The cepstral coefficient
 % M: The total number of bins
 % bins: The edges of each bin
 % X: The time frame
 function [c] = C(n, M, bins, X)
     c = 0;
-    for m = 0:M-1
+    for m = 0:M-2
         c = c + S(m, M, bins, X)*cos(pi*n*(m - .5)/M);
     end 
+    s_vec = ones(1, M);
+    for m = 0:M-2
+        s_vec(m+1) = S(m, M, bins, X);
+    end  
+    c_with_dct = dct(s_vec);
+    fprintf('C\n');
+    fprintf('%d\n', c);
+    fprintf('C with DCT\n');
+    fprintf('%d\n', c_with_dct);
+    pause;
 end
