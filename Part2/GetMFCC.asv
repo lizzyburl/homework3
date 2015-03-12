@@ -17,10 +17,10 @@ function [ ] = GetMFCC( filepath, lower, upper, M )
     h=hamming(winsize);
     % For each window
     j = 1;
+   
     for i=1:shift:length(x)-winsize
         % Take the fft for one timestep
         X = fft(x(i:i+winsize-1).*h,winsize);
-        c = C(j, M, bins, X);
     end
 
     pause;
@@ -96,21 +96,9 @@ end
 function [s] = S(m, M, bins, X)
 
 sum = 0;
-for k = 0:length(X)-1
-    sum = sum + X(k+1)^2*H(k, m, M, bins);
+for k = 1:length(X)
+    sum = sum + X(k)^2*H(k, m, M, bins);
 end
 s = log(sum);
 
-end
-
-%% C
-% n: 
-% M: The total number of bins
-% bins: The edges of each bin
-% X: The time frame
-function [c] = C(n, M, bins, X)
-    c = 0;
-    for m = 0:M-1
-        c = c + S(m, M, bins, X)*cos(pi*n*(m - .5)/M);
-    end 
 end
