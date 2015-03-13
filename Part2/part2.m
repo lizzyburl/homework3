@@ -75,9 +75,9 @@ end
 order = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'z', 'o'];
 for i = 1:11
     best_index = 1;
-    best_score = dtw(cell_matrix_b{i}, cep_matrix_a{1});
+    best_score = dtw(cep_matrix_b{i}.to_save, cep_matrix_a{1}.to_save);
     for j=2:1:9
-        score = dtw(cell_matrix_b{i}, cep_matrix_a{j});
+        score = dtw(cep_matrix_b{i}.to_save, cep_matrix_a{j}.to_save);
         if score < best_score
             best_score = score;
             best_index = j;
