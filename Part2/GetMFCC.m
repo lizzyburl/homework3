@@ -1,7 +1,7 @@
 function [ cep_matrix ] = GetMFCC( filepath, lower, upper, M )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-
+    tic;
 % Read in the audio file
     [x, fs, nbits] = wavread(filepath);
     % Winsize of 400 samples = 25 ms
@@ -28,9 +28,16 @@ function [ cep_matrix ] = GetMFCC( filepath, lower, upper, M )
         for coeff = 0:12
             c(coeff+1) = C(coeff, M, bins, X);
         end
-        cep_matrix(:, i) = c;
+        
+        cep_matrix(:, j) = c;
+        fprintf('%d   ', j);
+        j = j + 1;
     end
-
+    t = toc;
+    fprintf('Time: %d\n\n', t);
+    figure();
+    pcolor(cep_matrix);
+    title(filepath);
 end
 
 %% Get the pre-defined bins dynamically
@@ -122,13 +129,4 @@ function [c] = C(n, M, bins, X)
     for m = 1:M-1
         c = c + S(m, M, bins, X)*cos(pi*n*(m - .5)/M);
     end 
-    s_vec = ones(1, M);
-    for m = 1:M-1
-        s_vec(m) = S(m, M, bins, X);
-    end  
-        c_with_dct = dct(s_vec);
-%      fprintf('C\n');
-%      fprintf('%d\n', c);
-%      fprintf('C with DCT\n');
-%      fprintf('%d\n', c_with_dct);
 end
