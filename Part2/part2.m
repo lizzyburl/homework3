@@ -13,19 +13,63 @@ M = 24;
 cep_matrix_a = cell(1,9);
 cep_matrix_b = cell(1,9);
 for soundFile = 1:9
-    cep_matrix_a{soundFile} = GetMFCC(sprintf('%da.wav',soundFile), lower, upper, M);
-    fprintf('Done with %da', soundFile);
-    cep_matrix_b{soundFile} = GetMFCC(sprintf('%db.wav',soundFile), lower, upper, M);
-    fprintf('Done with %db', soundFile);
+    try
+        cep_matrix_a{soundFile} = load(sprintf('cep_mat_a%d.mat',soundFile));
+        disp('Found File');
+    catch
+        cep_matrix_a{soundFile} = GetMFCC(sprintf('%da.wav',soundFile), lower, upper, M);
+        fprintf('Done with %da', soundFile);
+        to_save = cep_matrix_a{soundFile};
+        save(sprintf('cep_mat_a%d.mat',soundFile), 'to_save');
+    end
+    try
+        cep_matrix_b{soundFile} = load(sprintf('cep_mat_b%d.mat',soundFile));
+        disp('Found File');
+    catch
+        cep_matrix_b{soundFile} = GetMFCC(sprintf('%db.wav',soundFile), lower, upper, M);
+        fprintf('Done with %db', soundFile);
+        to_save = cep_matrix_b{soundFile};
+        save(sprintf('cep_mat_b%d.mat',soundFile), 'to_save');
+    end
 end
-cep_matrix_a{10} = GetMFCC('za.wav', lower, upper, M);
-fprintf('Done with za');
-cep_matrix_b{10} = GetMFCC('zb.wav', lower, upper, M);
-fprintf('Done with zb');
-cep_matrix_a{11} = GetMFCC('oa.wav', lower, upper, M);
-fprintf('Done with oa');
-cep_matrix_b{11} = GetMFCC('ob.wav', lower, upper, M);
-fprintf('Done with ob');
+%% For z a and b
+try
+     cep_matrix_a{10} = load('cep_mat_az.mat');
+     disp('Found File');
+catch
+    cep_matrix_a{10} = GetMFCC('za.wav', lower, upper, M);
+    fprintf('Done with za');
+    to_save = cep_matrix_a{10};
+    save('cep_mat_az.mat', 'to_save');
+end
+try
+    cep_matrix_b{10} = load('cep_mat_bz.mat');
+    disp('Found File');
+catch
+    cep_matrix_b{10} = GetMFCC('zb.wav', lower, upper, M);
+    fprintf('Done with zb');
+    to_save = cep_matrix_b{10};
+    save('cep_mat_bz.mat', 'to_save');
+end
+%% For o a and b
+try
+     cep_matrix_a{11} = load('cep_mat_ao.mat');
+     disp('Found File');
+catch
+    cep_matrix_a{11} = GetMFCC('oa.wav', lower, upper, M);
+    fprintf('Done with oa');
+    to_save = cep_matrix_a{11};
+    save('cep_mat_ao.mat', 'to_save');
+end
+try
+    cep_matrix_b{11} = load('cep_mat_bo.mat');
+    disp('Found File');
+catch
+    cep_matrix_b{11} = GetMFCC('ob.wav', lower, upper, M);
+    fprintf('Done with ob');
+    to_save = cep_matrix_b{11};
+    save('cep_mat_bo.mat', 'to_save');
+end
 % Four each test file
 
 order = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'z', 'o'];
