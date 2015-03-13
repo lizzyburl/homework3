@@ -21,14 +21,14 @@ function [ cep_matrix ] = GetMFCC( filepath, lower, upper, M )
         len = len + 1;
     end
     cep_matrix = zeros(13, len);
-    for i=1:shift:(length(x)-winsize)
+    for i=1:shift:(length(x)-winsize)/4
         % Take the fft for one timestep
         X = fft(x(i:i+winsize-1).*h,winsize);
         c = zeros(13,1);
         for coeff = 0:12
             c(coeff+1) = C(coeff, M, bins, X);
         end
-        disp(c)
+        
         cep_matrix(:, j) = c;
         fprintf('%d   ', j);
         j = j + 1;
@@ -97,11 +97,9 @@ function [h] = H(k, m, M, bins)
     if (k < F(m-1, M, bins))
         h = 0;
     elseif ((k >= F(m-1, M, bins))&&(k<=F(m, M, bins)))
-        %h = (2*(k-F(m-1,M,bins)))/((F(m+1,M,bins)-F(m-1,M,bins))*(F(m,M,bins)-F(m-1,M,bins)));
-        h = (k-F(m-1,M,bins))/(F(m,M,bins)-F(m-1,M,bins));
+        h = (2*(k-F(m-1,M,bins)))/((F(m+1,M,bins)-F(m-1,M,bins))*(F(m,M,bins)-F(m-1,M,bins)));
     elseif ((k >= F(m, M, bins))&&(k<=F(m+1, M, bins)))
-        %h = (2*(F(m+1,M,bins)-k))/((F(m+1,M,bins)-F(m-1,M,bins))*(F(m+1,M,bins)-F(m,M,bins)));
-        h = (F(m+1, M, bins)-k)/(F(m+1, M, bins)-F(m, M, bins));
+        h = (2*(F(m+1,M,bins)-k))/((F(m+1,M,bins)-F(m-1,M,bins))*(F(m+1,M,bins)-F(m,M,bins)));
     else
         h = 0;
     end
@@ -131,6 +129,9 @@ end
 function [c] = C(n, M, bins, X)
     c = 0;
     for m = 1:M-1
+        %disp('##########')
+        disp(S(m, M, bins, X));
         c = c + S(m, M, bins, X)*cos(pi*n*(m - .5)/M);
     end 
+    pause;
 end
