@@ -18,7 +18,14 @@ for soundFile = 1:9
     cep_matrix_b{soundFile} = GetMFCC(sprintf('%db.wav',soundFile), lower, upper, M);
     fprintf('Done with b');
 end
-
+cep_matrix_a{soundFile} = GetMFCC(sprintf('%za.wav',soundFile), lower, upper, M);
+fprintf('Done with a');
+cep_matrix_b{soundFile} = GetMFCC(sprintf('%zb.wav',soundFile), lower, upper, M);
+fprintf('Done with b');
+cep_matrix_a{soundFile} = GetMFCC(sprintf('%oa.wav',soundFile), lower, upper, M);
+fprintf('Done with a');
+cep_matrix_b{soundFile} = GetMFCC(sprintf('%ob.wav',soundFile), lower, upper, M);
+fprintf('Done with b');
 % Four each test file
 for i = 1:9
     best_index = 1;
