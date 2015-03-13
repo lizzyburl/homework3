@@ -35,10 +35,9 @@ function [ cep_matrix ] = GetMFCC( filepath, lower, upper, M )
     end
     t = toc;
     fprintf('Time: %d\n\n', t);
-    figure();
-    cep_matrix
     pcolor(cep_matrix);
     title(filepath);
+    figure();
 end
 
 %% Get the pre-defined bins dynamically
