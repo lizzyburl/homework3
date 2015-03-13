@@ -84,8 +84,15 @@ for i = 1:11
         end
     end
     if i == best_index
-        fprintf('You have correctly matched %s', order(i));
+        fprintf('You have correctly matched %s\n', order(i));
     else
-        fprintf('Incorrect match: %s matched to template of %s', order(i), order(best_index));
+        fprintf('Incorrect match: %s matched to template of %s\n', order(i), order(best_index));
     end
+    figure();
+    subplot(1,2, 1);
+    pcolor(cep_matrix_b{i}.to_save);
+    title(sprintf('Testing %s', order(i)));
+    subplot(1,2, 2);
+    pcolor(cep_matrix_a{best_index}.to_save);
+    title(sprintf('Training match %s', order(best_index)));
 end
