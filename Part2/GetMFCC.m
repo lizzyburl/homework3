@@ -28,7 +28,6 @@ function [ cep_matrix ] = GetMFCC( filepath, lower, upper, M )
         for coeff = 0:12
             c(coeff+1) = C(coeff, M, bins, X);
         end
-        disp(c)
         cep_matrix(:, j) = c;
         fprintf('%d   ', j);
         j = j + 1;

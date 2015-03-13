@@ -18,13 +18,13 @@ for soundFile = 1:9
     cep_matrix_b{soundFile} = GetMFCC(sprintf('%db.wav',soundFile), lower, upper, M);
     fprintf('Done with %db', soundFile);
 end
-cep_matrix_a{10} = GetMFCC(sprintf('%za.wav',soundFile), lower, upper, M);
+cep_matrix_a{10} = GetMFCC('za.wav', lower, upper, M);
 fprintf('Done with za');
-cep_matrix_b{10} = GetMFCC(sprintf('%zb.wav',soundFile), lower, upper, M);
+cep_matrix_b{10} = GetMFCC('zb.wav', lower, upper, M);
 fprintf('Done with zb');
-cep_matrix_a{11} = GetMFCC(sprintf('%oa.wav',soundFile), lower, upper, M);
+cep_matrix_a{11} = GetMFCC('oa.wav', lower, upper, M);
 fprintf('Done with oa');
-cep_matrix_b{11} = GetMFCC(sprintf('%ob.wav',soundFile), lower, upper, M);
+cep_matrix_b{11} = GetMFCC('ob.wav', lower, upper, M);
 fprintf('Done with ob');
 % Four each test file
 
