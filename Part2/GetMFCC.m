@@ -1,10 +1,9 @@
-function [ ] = GetMFCC( filepath, lower, upper, M )
+function [ cep_matrix ] = GetMFCC( filepath, lower, upper, M )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
 % Read in the audio file
     [x, fs, nbits] = wavread(filepath);
-    timeSteps = size(x);
     % Winsize of 400 samples = 25 ms
     % Shift of 160 = 10 ms
     winsize=400;
@@ -17,6 +16,11 @@ function [ ] = GetMFCC( filepath, lower, upper, M )
     h=hamming(winsize);
     % For each window
     j = 1;
+    len = 1;
+    for i=1:shift:length(x)-winsize
+        len = len + 1;
+    end
+    cep_matrix = zeros(13, len);
     for i=1:shift:length(x)-winsize
         % Take the fft for one timestep
         X = fft(x(i:i+winsize-1).*h,winsize);
@@ -24,13 +28,12 @@ function [ ] = GetMFCC( filepath, lower, upper, M )
         for coeff = 0:12
             c(coeff+1) = C(coeff, M, bins, X);
         end
+        cep_matrix(:, i) = c;
     end
-
-    pause;
 
 end
 
-%% 
+%% Get the pre-defined bins dynamically
 
 function [bins] = GetBins(lower, upper, M)
     lower_mel = B(lower);
@@ -63,9 +66,9 @@ function [f] = F(m, M, bins)
     Fs = 16000;
     % N = The number of points in FFT
     N = 400;
-    if m == 0 || m == -1
+    if m == 0
         f = 0;
-    elseif m == M-1 || m == M
+    elseif m == M
         f = N/Fs;
     else
         % fl = Lower frequency of the filterbank
@@ -105,7 +108,6 @@ sum = 0;
 for k = 0:length(X)-1
     sum = sum + (real(X(k+1))^2+imag(X(k+1))^2)*H(k, m, M, bins);
 end
-pause;
 s = log(sum);
 
 end
@@ -117,17 +119,16 @@ end
 % X: The time frame
 function [c] = C(n, M, bins, X)
     c = 0;
-    for m = 0:M-2
+    for m = 1:M-1
         c = c + S(m, M, bins, X)*cos(pi*n*(m - .5)/M);
     end 
     s_vec = ones(1, M);
-    for m = 0:M-2
-        s_vec(m+1) = S(m, M, bins, X);
+    for m = 1:M-1
+        s_vec(m) = S(m, M, bins, X);
     end  
-    c_with_dct = dct(s_vec);
-    fprintf('C\n');
-    fprintf('%d\n', c);
-    fprintf('C with DCT\n');
-    fprintf('%d\n', c_with_dct);
-    pause;
+        c_with_dct = dct(s_vec);
+%      fprintf('C\n');
+%      fprintf('%d\n', c);
+%      fprintf('C with DCT\n');
+%      fprintf('%d\n', c_with_dct);
 end
